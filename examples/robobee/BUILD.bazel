@@ -1,0 +1,93 @@
+# -*- python -*-
+
+load(
+    "@drake//tools/skylark:drake_cc.bzl",
+    "drake_cc_googletest",
+    "drake_cc_library",
+    "drake_cc_binary",
+)
+load("//tools/install:install_data.bzl", "install_data")
+load("//tools/lint:lint.bzl", "add_lint_tests")
+
+package(
+    default_visibility = [
+        "//visibility:public",
+    ],
+
+)
+
+# cc_binary(
+#     name = "testfileout",
+#     srcs = ["testfileout.cc"],
+# )
+
+
+drake_cc_library(
+    name = "robobee_plant",
+    srcs = ["robobee_plant.cc"],
+    hdrs = ["robobee_plant.h"],
+    deps = [
+        "//common:default_scalars",
+        "//math:geometric_transform",
+        "//math:gradient",
+        "//systems/controllers:linear_quadratic_regulator",
+        "//systems/framework:leaf_system",
+        "//systems/primitives:affine_system",
+        "//attic/util",
+    ],
+)
+
+
+drake_cc_library(
+    name = "TrajectoryOptPlot",
+    srcs = ["TrajectoryOptPlot.cc",
+            "TrajectoryOptPlot.h"],
+    deps = ["//systems/trajectory_optimization:direct_collocation",
+            "//common/proto:call_python"], 
+)
+
+drake_cc_binary(
+    name = "run_robobee_traj_optimization",
+    srcs = ["run_robobee_traj_optimization.cc"],
+    add_test_rule = 1,
+    data = [":models"],
+    test_rule_args = ["-realtime_factor=0.0"],
+    deps = [
+        ":robobee_plant",
+        "//common:find_resource",
+        "//lcm",
+        "//attic/multibody:rigid_body_tree",
+        "//attic/multibody:rigid_body_tree_construction",
+        "//attic/multibody/rigid_body_plant:rigid_body_plant",
+        "//attic/multibody/joints",
+        "//attic/multibody/parsers",
+        "//attic/multibody/rigid_body_plant:drake_visualizer",
+        "//systems/analysis",
+        "//systems/controllers:linear_quadratic_regulator",
+        "//systems/primitives:trajectory_source",
+        "//systems/trajectory_optimization:direct_collocation",
+        ":TrajectoryOptPlot",
+        "@gflags",
+    ],
+)
+
+# drake_cc_googletest(
+#     name = "robobee_dynamics_test",
+#     data = [":models"],
+#     deps = [
+#         ":robobee_plant",
+#         "//common:find_resource",
+#         "//common/test_utilities:eigen_matrix_compare",
+#         "//multibody:rigid_body_tree_construction",
+#         "//multibody/parsers",
+#         "//multibody/rigid_body_plant",
+#         "//systems/analysis:simulator",
+#         "//systems/framework:diagram",
+#         "//systems/framework/test_utilities",
+#         "//systems/primitives:constant_vector_source",
+#     ],
+# )
+
+install_data()
+
+add_lint_tests()
