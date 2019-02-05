@@ -58,7 +58,7 @@ int do_main() {
     // small on every beleif state delta from goal and on input
     dircol.AddRunningCost(u.transpose()*R*u + (b - bf).transpose()*Q*(b - bf));
     // large on final on variance as well
-    auto finalVar = dircol.state().bottomRows(1);     T Qvar = 20;//200;
+    auto finalVar = dircol.state().bottomRows(1);     T Qvar = 50;//200;
     dircol.AddFinalCost(finalVar*Qvar*finalVar);
 
 //-[0-4] Set initial guess
@@ -69,10 +69,11 @@ int do_main() {
 //-[1] Solve Direct collocation
     drake::solvers::SolutionResult result = dircol.Solve();
     if (result != drake::solvers::SolutionResult::kSolutionFound) {
-    std::cerr << "No solution found.\n";
-    std::cerr << result << std::endl;
-    return 1;
-    }  
+        std::cerr << "No solution found.\n";
+        std::cerr << result << std::endl;
+        return 1;
+    }
+    else{std::cout << "Solved with: " << dircol.GetSolverId()->name() << std::endl;}
 
 //-[2] Log the optimal solution
 

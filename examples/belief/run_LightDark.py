@@ -2,6 +2,11 @@ import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 
+# run to get a new result
+import os
+os.system("bazel run :run_lightDark")
+
+#then plot the data
 def cmap_map(function, cmap):
     """ Applies function (which should operate on vectors of shape 3: [r, g, b]), on colormap cmap.
     This routine will break any discontinuous points in a colormap.
