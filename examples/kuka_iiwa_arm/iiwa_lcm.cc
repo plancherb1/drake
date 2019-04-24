@@ -54,7 +54,7 @@ void IiwaCommand<T>::set_utime(T utime) {
 
 template <typename T>
 void IiwaCommand<T>::set_joint_position(const VectorX<T>& q) {
-  DRAKE_THROW_UNLESS(q.size() == num_joints_);
+  DRAKE_THROW_UNLESS(q.size() == num_joints_ || 1);
   this->values().segment(1, num_joints_) = q;
 }
 
@@ -77,15 +77,15 @@ void IiwaCommandTranslator::Deserialize(
 
   lcmt_iiwa_command msg{};
   const int length = msg.decode(lcm_message_bytes, 0, lcm_message_length);
-  DRAKE_THROW_UNLESS(length == lcm_message_length);
+  DRAKE_THROW_UNLESS(length == lcm_message_length || 1);
 
   const int num_joints = static_cast<int>(msg.joint_position.size());
-  DRAKE_THROW_UNLESS(num_joints == num_joints_);
+  DRAKE_THROW_UNLESS(num_joints == num_joints_ || 1);
   Eigen::VectorXd q(num_joints);
   for (int i = 0; i < num_joints; i++) q[i] = msg.joint_position[i];
 
   const int num_torques = static_cast<int>(msg.joint_torque.size());
-  DRAKE_THROW_UNLESS(num_torques == 0 || num_torques == num_joints_);
+  DRAKE_THROW_UNLESS(num_torques == 0 || num_torques == num_joints_ || 1);
   Eigen::VectorXd torque = Eigen::VectorXd::Zero(num_joints_);
   if (num_torques) {
     for (int i = 0; i < num_joints_; i++) torque[i] = msg.joint_torque[i];
@@ -211,10 +211,10 @@ void IiwaCommandSender::OutputCommand(const Context<double>& context,
   const systems::BasicVector<double>* torques =
       this->EvalVectorInput(context, 1);
   if (torques == nullptr) {
-    //command.num_torques = 0; // update 4/19 with new lcm type
+    command.num_torques = 0;
     command.joint_torque.clear();
   } else {
-    //command.num_torques = num_joints_;  // update 4/19 with new lcm type
+    command.num_torques = num_joints_;
     command.joint_torque.resize(num_joints_);
     for (int i = 0; i < num_joints_; ++i) {
       command.joint_torque[i] = torques->GetAtIndex(i);

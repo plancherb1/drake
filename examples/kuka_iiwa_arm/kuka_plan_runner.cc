@@ -76,7 +76,7 @@ class RobotPlanRunner {
     lcmt_iiwa_command iiwa_command;
     iiwa_command.num_joints = kNumJoints;
     iiwa_command.joint_position.resize(kNumJoints, 0.);
-    // iiwa_command.num_torques = 0; // Update 4/19 for new lcm message type
+    iiwa_command.num_torques = 0;
     iiwa_command.joint_torque.resize(kNumJoints, 0.);
 
     while (true) {
