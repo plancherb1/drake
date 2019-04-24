@@ -80,7 +80,7 @@ GTEST_TEST(IiwaLcmTest, IiwaCommandReceiverTest) {
       tol, MatrixCompareType::absolute));
 
   // Test with joint torque command.
-  command.num_torques = kNumJoints;
+  //command.num_torques = kNumJoints; // 4/19 new lcm types
   command.joint_torque.resize(kNumJoints);
   VectorX<double> expected_torque(kNumJoints);
   for (int i = 0; i < kNumJoints; i++) {
@@ -120,7 +120,7 @@ GTEST_TEST(IiwaLcmTest, IiwaCommandSenderTest) {
   for (int i = 0; i < kNumJoints; i++) {
     EXPECT_EQ(command.joint_position[i], position(i));
   }
-  EXPECT_EQ(command.num_torques, 0);
+  //EXPECT_EQ(command.num_torques, 0); // 4/19 new lcm types
 
   Eigen::VectorXd torque(kNumJoints);
   torque << 1, 2, 3, 4, 5, 6, 7;
@@ -129,7 +129,7 @@ GTEST_TEST(IiwaLcmTest, IiwaCommandSenderTest) {
   dut.CalcOutput(*context, output.get());
   command = output->get_data(0)->GetValue<lcmt_iiwa_command>();
   ASSERT_EQ(command.num_joints, kNumJoints);
-  ASSERT_EQ(command.num_torques, kNumJoints);
+  //ASSERT_EQ(command.num_torques, kNumJoints); // 4/19 new lcm types
   for (int i = 0; i < kNumJoints; i++) {
     EXPECT_EQ(command.joint_position[i], position(i));
     EXPECT_EQ(command.joint_torque[i], torque(i));
