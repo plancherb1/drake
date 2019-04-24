@@ -211,10 +211,10 @@ void IiwaCommandSender::OutputCommand(const Context<double>& context,
   const systems::BasicVector<double>* torques =
       this->EvalVectorInput(context, 1);
   if (torques == nullptr) {
-    command.num_torques = 0;
+    //command.num_torques = 0; // update 4/19 with new lcm type
     command.joint_torque.clear();
   } else {
-    command.num_torques = num_joints_;
+    //command.num_torques = num_joints_;  // update 4/19 with new lcm type
     command.joint_torque.resize(num_joints_);
     for (int i = 0; i < num_joints_; ++i) {
       command.joint_torque[i] = torques->GetAtIndex(i);

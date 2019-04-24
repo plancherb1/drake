@@ -47,6 +47,13 @@ drake_cc_binary(
     ],
 )
 
+py_binary(
+    name = "temp",
+    srcs = ["temp.py"],
+    data = [":models"],
+    deps = ["//bindings/pydrake"],
+)
+
 # drake_cc_googletest(
 #     name = "robobee_dynamics_test",
 #     data = [":models"],
