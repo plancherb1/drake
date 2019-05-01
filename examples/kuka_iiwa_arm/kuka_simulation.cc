@@ -195,10 +195,19 @@ int DoMain() {
   simulator.set_target_realtime_rate(FLAGS_target_realtime_rate);
   simulator.Initialize();
 
+  VectorX<double> initialPos = VectorX<double>::Zero(tree.get_num_positions());
+  printf("Please set the initial position\n");
+  printf("q[0]: "); std::cin >> initialPos[0];
+  printf("q[1]: "); std::cin >> initialPos[1];
+  printf("q[2]: "); std::cin >> initialPos[2];
+  printf("q[3]: "); std::cin >> initialPos[3];
+  printf("q[4]: "); std::cin >> initialPos[4];
+  printf("q[5]: "); std::cin >> initialPos[5];
+  printf("q[6]: "); std::cin >> initialPos[6];
   command_receiver->set_initial_position(
       &sys->GetMutableSubsystemContext(*command_receiver,
                                        &simulator.get_mutable_context()),
-      VectorX<double>::Zero(tree.get_num_positions()));
+                                       initialPos);
 
   // Simulate for a very long time.
   simulator.StepTo(FLAGS_simulation_sec);
