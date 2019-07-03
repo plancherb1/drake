@@ -8,14 +8,13 @@ load(
 )
 load(
     "@drake//tools/skylark:drake_py.bzl",
+    "drake_py_binary",
+    "drake_py_test",
+    "drake_py_library",
     "drake_py_unittest",
 )
 load("//tools/install:install_data.bzl", "install", "install_data")
 load("//tools/lint:lint.bzl", "add_lint_tests")
-load(
-    "@drake//tools/skylark:drake_py.bzl",
-    "drake_py_test",
-)
 
 package(
     default_visibility = [":__subpackages__"],
@@ -206,6 +205,35 @@ drake_cc_binary(
         "@lcmtypes_robotlocomotion",
     ],
 )
+
+drake_py_binary(
+    name = "fig8_lcm_demo",
+    srcs = ["fig8_lcm_demo.py"],
+    data = [
+        ":models",
+        "//manipulation/models/iiwa_description:models",
+    ],
+    deps = [
+        "@drake//bindings/pydrake",
+        # ":iiwa_common",
+        # "@lcm",
+        # "@lcmtypes_bot2_core",
+        # "@lcmtypes_robotlocomotion",
+    ],
+)
+
+drake_py_binary(
+    name = "fig8_goals",
+    srcs = ["fig8_goals.py"],
+    data = [
+        ":models",
+        "//manipulation/models/iiwa_description:models",
+    ],
+    deps = [
+        "@drake//bindings/pydrake",
+    ],
+)
+
 
 alias(
     name = "models",
